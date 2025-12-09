@@ -23,24 +23,24 @@ Where the "db_url" is the connection string to the database in the format:
 The program is used by first registering a new user. The user can then add RSS feeds to follow, and to allow other users to follow. By using the browse command a user can see the latest posts by their followed feeds.
 
 #### Reset 
-Used in the format `go run . reset` to clear the database
+Used in the format `./gator reset` to clear the database
 #### Login 
-Used to login an existing user in the format `go run . login <user>`
+Used to login an existing user in the format `./gator login <user>`
 #### Register 
-Used to register a new user in the format `go run . register <user>`
+Used to register a new user in the format `./gator register <user>`
 #### Users 
-Used to list users in the format `go run . users`
+Used to list users in the format `./gator users`
 #### Aggregate 
-Used to aggregate registered RRS feeds in the database. Command format `go run . agg <refresh_time>`
+Used to aggregate registered RRS feeds in the database. Command format `./gator agg <refresh_time>`
 #### Add Feed 
-Used to add a new RSS feed to the database in the format `go run . addfeed <name> <url>`
+Used to add a new RSS feed to the database in the format `./gator addfeed <name> <url>`
 #### Feeds 
-Used to list registered RSS feeds in the format `go run . feeds`
+Used to list registered RSS feeds in the format `./gator feeds`
 #### Follow 
-Used to follow a feed as the currently logged in user in the format `go run . follow <url>`
+Used to follow a feed as the currently logged in user in the format `./gator follow <url>`
 #### Following 
-Used to list all feeds being followed by the currently logged in user in the format `go run . following`
+Used to list all feeds being followed by the currently logged in user in the format `./gator following`
 #### Unfollow 
-Used to unfollow a feed as the currently logged in user in the format `go run . unfollow <url>`
+Used to unfollow a feed as the currently logged in user in the format `./gator unfollow <url>`
 #### Browse 
-Used to list the latest posts of feeds followed by the logged in user in the format `go run . browse <number_of_posts>`
+Used to list the latest posts of feeds followed by the logged in user in the format `./gator browse <number_of_posts>`

@@ -1,5 +1,3 @@
-connection string: postgres://postgres:postgres@localhost:5432/gator
-
 <h2> Requirements </h2>
 1. Postgres v15+
 2. Go 1.25+

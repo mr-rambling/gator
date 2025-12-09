@@ -1,38 +1,62 @@
 package main
 
 import (
-	"fmt"
+	"database/sql"
+	"log"
 	"os"
 
+	_ "github.com/lib/pq"
 	"github.com/mr-rambling/gator/internal/config"
+	"github.com/mr-rambling/gator/internal/database"
 )
+
+type state struct {
+	db  *database.Queries
+	cfg *config.Config
+}
 
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
-		fmt.Printf("error: %s", err)
+		log.Fatalf("error reading config: %v", err)
 	}
 
-	var s state
-	s.cfg = &cfg
+	db, err := sql.Open("postgres", cfg.DBURL)
+	if err != nil {
+		log.Fatalf("error connecting to db: %v", err)
+	}
+
+	dbQueries := database.New(db)
+
+	programState := &state{
+		db:  dbQueries,
+		cfg: &cfg,
+	}
 
 	cmds := commands{
-		names: make(map[string]func(*state, command) error),
+		registeredCommands: make(map[string]func(*state, command) error),
 	}
+	cmds.register("reset", handlerReset)
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
+	cmds.register("users", handlerUsers)
+	cmds.register("agg", handlerAggregator)
+	cmds.register("addfeed", middlewareLoggedIn(handlerAddFeed))
+	cmds.register("feeds", handlerFeeds)
+	cmds.register("follow", middlewareLoggedIn(handlerFollow))
+	cmds.register("following", middlewareLoggedIn(handlerFollowing))
+	cmds.register("unfollow", middlewareLoggedIn(handlerUnfollow))
+	cmds.register("browse", middlewareLoggedIn(handlerBrowse))
 
-	args := os.Args
-
-	if len(args) < 3 {
-		fmt.Println("missing argument")
-		os.Exit(1)
+	if len(os.Args) < 2 {
+		log.Fatal("Usage: cli <command> [args...]")
 	}
 
 	cmd := command{
-		name: args[1],
-		args: args[2:],
+		Name: os.Args[1],
+		Args: os.Args[2:],
 	}
-	if err := cmds.run(&s, cmd); err != nil {
-		fmt.Println(err)
+	if err := cmds.run(programState, cmd); err != nil {
+		log.Fatal(err)
 	}
 }
